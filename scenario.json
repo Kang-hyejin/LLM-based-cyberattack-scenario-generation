@@ -1,0 +1,79 @@
+[
+  {
+    "S_ID": "1",
+    "kill_chain": "Reconnaissance",
+    "MITRE ATT&CK ID": "T1595",
+    "Delivery Method": "Web Scanning",
+    "Target": "Server A (192.168.70.1)",
+    "Title": "외부 접점 서버 탐색",
+    "Description": "공격자는 인터넷과 접점이 있는 Server A의 웹 애플리케이션(WordPress, Apache)을 대상으로 포트 스캔 및 서비스 버전 탐지를 수행하였다. nmap -sV 192.168.70.1 명령어 사용.",
+    "Expected Actions": "관리자는 IDS/IPS에서 스캔 징후 탐지 및 방화벽 로그 점검",
+    "evidence": "observed"
+  },
+  {
+    "S_ID": "2",
+    "kill_chain": "Weaponization",
+    "MITRE ATT&CK ID": "T1059",
+    "Delivery Method": "Web Exploit",
+    "Target": "Server A",
+    "Title": "웹 취약점 악용 도구 제작",
+    "Description": "공격자는 WordPress 취약 플러그인을 악용하기 위해 SQL Injection 및 Remote Code Execution 스크립트를 제작하였다. Metasploit 및 Python 기반 exploit 작성.",
+    "Expected Actions": "취약점 패치 여부 확인 및 WAF 룰 검증",
+    "evidence": "inferred"
+  },
+  {
+    "S_ID": "3",
+    "kill_chain": "Delivery",
+    "MITRE ATT&CK ID": "T1190",
+    "Delivery Method": "Web Exploit",
+    "Target": "Server A",
+    "Title": "악성 페이로드 전달",
+    "Description": "공격자는 WordPress 취약점을 통해 웹쉘(webshell)을 업로드하고 CrossC2 에이전트를 설치하였다.",
+    "Expected Actions": "웹 로그 감시, 웹쉘 업로드 탐지, 파일 무결성 검사",
+    "evidence": "observed"
+  },
+  {
+    "S_ID": "4",
+    "kill_chain": "Exploitation",
+    "MITRE ATT&CK ID": "T1078",
+    "Delivery Method": "Credential Abuse",
+    "Target": "Server B (192.168.70.2)",
+    "Title": "평문 계정정보 활용한 내부 침투",
+    "Description": "Server A에 저장된 평문 계정(ID/PW)을 활용해 Server B에 원격 접속. 동일 계정으로 RDP/SMB 인증 시도.",
+    "Expected Actions": "비정상 로그인 시도 탐지, 계정 정책 강화(비밀번호 변경 주기 적용)",
+    "evidence": "observed"
+  },
+  {
+    "S_ID": "5",
+    "kill_chain": "Installation",
+    "MITRE ATT&CK ID": "T1105",
+    "Delivery Method": "Remote File Copy",
+    "Target": "Server B",
+    "Title": "추가 악성코드 설치",
+    "Description": "공격자는 Server B에 BPFDoor 백도어를 설치하여 장기적인 C2 연결 기반을 마련하였다.",
+    "Expected Actions": "프로세스/네트워크 행위 기반 이상 탐지(eBPF, EDR), 비인가 파일 복사 탐지",
+    "evidence": "observed"
+  },
+  {
+    "S_ID": "6",
+    "kill_chain": "Command and Control",
+    "MITRE ATT&CK ID": "T1071",
+    "Delivery Method": "C2 Traffic",
+    "Target": "Server B → Core Network",
+    "Title": "C2 채널 구축",
+    "Description": "BPFDoor를 통해 암호화된 C2 트래픽 발생. 공격자는 지속적으로 내부망 명령 실행 가능.",
+    "Expected Actions": "네트워크 트래픽 모니터링, C2 Beacon 패턴 탐지",
+    "evidence": "inferred"
+  },
+  {
+    "S_ID": "7",
+    "kill_chain": "Actions on Objectives",
+    "MITRE ATT&CK ID": "T1041",
+    "Delivery Method": "Exfiltration via Proxy",
+    "Target": "Server C (192.168.71.1) → HSS Server",
+    "Title": "유심정보 외부 유출",
+    "Description": "공격자는 HSS 서버에 저장된 유심 정보를 Server C를 중계 서버로 활용하여 외부로 전송하였다. curl, ftp, base64 인코딩을 통해 파일 전송.",
+    "Expected Actions": "대량 데이터 전송 탐지, 로그 상의 이상 아웃바운드 트래픽 차단",
+    "evidence": "observed"
+  }
+]
