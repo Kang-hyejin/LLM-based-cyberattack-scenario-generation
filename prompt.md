@@ -1,0 +1,46 @@
+1) Instruction
+Role: 당신은 사이버 보안 훈련을 설계하는 전문 시나리오 작성자입니다. Cyber Kill Chain과 MITRE ATT&CK을 기반으로 JSON 형식의 시나리오를 생성해야 합니다.
+TLO: Furfaro, A의 논문을 참고해 간단하게 서버를 구성하였다. 석사 과정 학생들에게 주요 정보 보안 개념을 소개하기 위한 목표가 존재하며 실제 사례를 통해 정보 보안 개념을 소개한다.
+
+2) Scenario Information
+asset:
+server a(192.168.70.1): windows 2008, MySQL, WordPress, Apache: 취약한 Web-Log(블로그) 플랫폼 호스팅
+server b(192.168.70.2): windows 2008, MySQL, WordPress, Apache: 취약한 Web-Log(블로그) 플랫폼 호스팅
+server c(192.168.71.1): Ubuntu server, MySQL, Joomia, Apache: 취약한 호텔 예약 시스템(Hotel Booking System) 호스팅
+Network Router: VPN Access Point
+PFSense VM: 내부 네트워크 ip: 192.168.70.x, 외부 네트워크ip: 192.168.73.x, 방화벽 및 로드밸런스 역할
+
+3) Background Information
+information: 본 시나리오는 2025년 4월 발생한 대한민국 SKT 유심 정보 유출 사건을 기반으로 한다
+detail: 
+1. 초기침투
+(초기 침투)공격자는 외부 인터넷 연결 접점이 있는 시스템 관리망 내  서버 A에 *접속 후 타 서버에 침투하기 위해 원격제어 백도어 기능 등이, 포함된 악성코드를 설치(CrossC2) **(‘21.8.6.)
+*서버에는 시스템 관리망 내 서버들의 계정 정보가 평문으로 저장 * A (ID, PW)
+** 조사 과정에서 확인된 감염서버 중 가장 빠른 시기에 감염 ** 
+- 공격자는 서버 에 저장된 계정정보A를 활용해 시스템 관리망 내 타서버에(B) 접속한 것으로 추정*
+(추정근거) 서버 에 A평문으로 저장된 ID, PW를 활용해 서버 B에 접속한 로그기록은 남아있지 않으나 동일한 ID, PW로 시스템 관리망 내 타 서버에 접속한 기록을 확인하였음.
+(고객 관리망 침투)공격자는 시스템 관리망 내 서버에 평문으로 저장된 계정정보(ID, PW)를 활용해 코어망 내 관리서버HSS 에 접속(’21.12.24.),
+HSS관리서버 및 HSS에 악성코드 설치(‘21.12.24 ’22.1.1)
+
+2. 추가 거점 확보(‘22.6월~)
+(고객 관리망 침투)공격자는 시스템 관리망을 통해 고객 관리망내 고객인증 연계 서버에 접속한 것으로 추정서버 접속 후 *, 웹쉘설치, BPFDoor (‘22.6.15., 6.22.)
+(추정 근거) 조사단은 공격자가 시스템 관리망과 고객 관리망 간 통신한 기록을 확인하였고, 
+이를 근거로 공격자가 시스템 관리망 내 감염서버에서 고객 관리망으로 접속이 가능한 것으로 판단
+
+3. 정보유출 (’25.4.18)
+(추가감염)초기 침투과정에서 확보한 계정 정보*를 활용하여 시스템 관리망 내 여러 서버에 추가로 악성코드 설치(‘23.11.30~’25.4.21)
+* SK텔레콤은 시스템 관리망 내 서버의 계정 패스워드를 장기간 미변경 (패스워드 만료일이설정 되어있지 않고 변경한 이력이 없는 것으로 확인)
+(정보유출) 공격자는 코어망 내  HSS서버 3개에 저장된 유심정보를 시스템 관리망 내 인터넷 연결 접점이 있는 서버 C를 거쳐 유출(‘25.4.18.)
+
+4) Final Output Format
+** json 형식으로 다음과 같은 형식을 지켜 출력할 것 **
+
+S_ID: 시나리오 순서 ID
+kill_chain: Cyber Kill Chain 단계 (Reconnaissance → Weaponization → Delivery → Exploitation → Installation → Command and Control → Actions on Objectives)
+MITRE ATT&CK ID: 각 공격 단계에 매핑되는 ATT&CK 기술 ID
+Delivery Method: 이벤트 전달 방식 (예: Email, Web Exploit, Phone, N/A)
+Target: 이벤트 대상 (예: All, Web Server A, DB Server B 등)
+Title: 이벤트 간단 설명
+Description: 공격 상세 설명 (공격 경로, 사용 명령어 포함)
+Exected Actions: 참가자가 수행해야 할 탐지/대응 행동
+evidence: observed (실제 사건 기반) / inferred (추론 기반)
