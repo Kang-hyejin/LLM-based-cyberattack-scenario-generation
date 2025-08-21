@@ -1,8 +1,6 @@
 1) Instruction
 Role: 당신은 사이버 보안 훈련을 설계하는 전문 시나리오 작성자입니다. Cyber Kill Chain과 MITRE ATT&CK을 기반으로 JSON 형식의 시나리오를 생성해야 합니다.
 TLO: Furfaro, A의 논문을 참고해 간단하게 서버를 구성하였다. 석사 과정 학생들에게 주요 정보 보안 개념을 소개하기 위한 목표가 존재하며 실제 사례를 통해 정보 보안 개념을 소개한다.
-
-
 2) Scenario Information
 asset:
 server a(192.168.70.1): windows 2008, MySQL, WordPress, Apache: 취약한 Web-Log(블로그) 플랫폼 호스팅
@@ -10,8 +8,6 @@ server b(192.168.70.2): windows 2008, MySQL, WordPress, Apache: 취약한 Web-Lo
 server c(192.168.71.1): Ubuntu server, MySQL, Joomia, Apache: 취약한 호텔 예약 시스템(Hotel Booking System) 호스팅
 Network Router: VPN Access Point
 PFSense VM: 내부 네트워크 ip: 192.168.70.x, 외부 네트워크ip: 192.168.73.x, 방화벽 및 로드밸런스 역할
-
-
 3) Background Information
 information: 본 시나리오는 2025년 4월 발생한 대한민국 SKT 유심 정보 유출 사건을 기반으로 한다
 detail: 
@@ -30,26 +26,31 @@ HSS관리서버 및 HSS에 악성코드 설치(‘21.12.24 ’22.1.1)
 3. 정보유출 (’25.4.18)
 (추가감염)초기 침투과정에서 확보한 계정 정보*를 활용하여 시스템 관리망 내 여러 서버에 추가로 악성코드 설치(‘23.11.30~’25.4.21)
 * SK텔레콤은 시스템 관리망 내 서버의 계정 패스워드를 장기간 미변경 (패스워드 만료일이설정 되어있지 않고 변경한 이력이 없는 것으로 확인)
-(정보유출) 공격자는 코어망 내  HSS서버 3개에 저장된 유심정보를 시스템 관리망 내 인터넷 연결 접점이 있는 서버 C를 거쳐 유출(‘25.4.18.)
-
-
+(정보유출) 공격자는 코어망 내 HSS서버 3개에 저장된 유심정보를 시스템 관리망 내 인터넷 연결 접점이 있는 서버 C를 거쳐 유출(‘25.4.18.)
 4) Final Output Format
-** json 형식으로 다음과 같은 형식을 지켜 출력할 것 **
-** 시나리오는 TLO를 반영하여 구성할 것 **
-** 시나리오를 구성할 때는 2) Scenario Information의 자산 정보를 모두 사용하여 구성할 것 **
-** 2) Scenario Information에 사용되지 않은 자산은 시나리오에 사용하지 말 것 **
-** 3) Background Information 사용된 자산 정보들을 2) Scenario Information와 비교하여 시나리오를 구성하되, 반드시 2) Scenario Information에 정의된 자산만 사용하여 시나리오를 구성할 것 **
+다음 순서대로 사고한 뒤 시나리오를 작성할 것:
+1. TLO에서 요구하는 목표를 확인한다.
+2. Scenario Information에 정의된 자산을 모두 나열한다.
+3. Background Information에서 언급된 자산과 비교한다.
+4. Scenario Information에 없는 자산은 제거한다.
+5. 남은 자산만을 사용해 침투 시나리오 단계를 구성한다.
+6. Background Information에 정의된 기간은 고려해도 되나, 출력 결과에 날짜 그대로를 반영할 필요는 없다.
 
+** 시나리오는 JSON 형식으로 다음과 같은 형식을 지켜 출력할 것 **
 S_ID: 시나리오 순서 ID
 kill_chain: Cyber Kill Chain 단계 (Reconnaissance → Weaponization → Delivery → Exploitation → Installation → Command and Control → Actions on Objectives)
-MITRE ATT&CK ID: 각 공격 단계에 매핑되는 ATT&CK 기술 ID
+MITRE ATT&CK: 각 공격 단계에 매핑되는 객체 (아래와 같이 구성)  
+    - id: ATT&CK 기술 ID (예: T1059.001)  
+    - reason: 해당 ID를 선택한 근거 설명  
 Delivery Method: 이벤트 전달 방식 (예: Email, Web Exploit, Phone, N/A)
 Target: 이벤트 대상 (예: All, Web Server A, DB Server B 등)
 Title: 이벤트 간단 설명
 Description: 공격 상세 설명 (공격 경로, 사용 명령어 포함)
-Exected Actions: 참가자가 수행해야 할 탐지/대응 행동
+Expected Actions: 참가자가 수행해야 할 탐지/대응 행동
 evidence: observed (실제 사건 기반) / inferred (추론 기반)
 
-최종 JSON 출력 전에 반드시 검증할 것:
-- Target, Description, Title에 등장하는 모든 자산이 asset 목록에 포함되어야 함.
-- asset에 없는 자산이 등장하면 잘못된 출력으로 간주한다.
+출력 전 다음 단계를 거쳐 사고한 뒤 JSON을 생성할 것:
+1. Target, Description, Title에 등장하는 자산을 추출한다.
+2. 추출한 자산이 asset 목록에 모두 포함되어 있는지 확인한다.
+3. asset에 없는 자산이 있다면 잘못된 출력으로 표시하고 중단한다.
+4. 모든 검증이 통과되면 최종 JSON을 출력한다.
