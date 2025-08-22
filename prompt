@@ -55,5 +55,6 @@ evidence: observed (실제 사건 기반) / inferred (추론 기반) / simulated
 출력 전 다음 단계를 거쳐 사고한 뒤 JSON을 생성할 것:
 1. Target, Description, Title에 등장하는 자산을 추출한다.
 2. 추출한 자산이 asset 목록에 모두 포함되어 있는지 확인한다.
-3. asset에 없는 자산이 있다면 존재하는 자산으로 교정한 뒤 검증 절차를 반복한다.
+3. asset에 없는 자산이 있다면 존재하는 자산으로 교정한 뒤 검증 절차를 반복한다.4. kill_chain에 등장하는 요소를 추출한다.
+5. 추출한 단계가 Reconnaissance → Weaponization → Delivery → Exploitation → Installation → Command and Control → Actions on Objectives 이외의 용어를 사용했다면 근접한 단계로 교정한 뒤 검증 절차를 반복한다.
 4. 모든 검증이 통과되면 최종 JSON을 출력한다.
