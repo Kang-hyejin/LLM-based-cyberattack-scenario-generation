@@ -34,7 +34,10 @@ HSS관리서버 및 HSS에 악성코드 설치(‘21.12.24 ’22.1.1)
 3. Background Information에서 언급된 자산과 비교한다.
 4. Scenario Information에 없는 자산은 제거한다.
 5. 남은 자산만을 사용해 침투 시나리오 단계를 구성한다.
-6. Background Information에 정의된 기간은 고려해도 되나, 출력 결과에 날짜 그대로를 반영할 필요는 없다.
+6. Background Information에 정의된 기간을 참고하여 사건 전개 순서를 합리적으로 구성하되 출력 결과에 날짜 그대로를 반영할 필요는 없다.
+7. kill_chain을 정의할 때는 (Reconnaissance → Weaponization → Delivery → Exploitation → Installation → Command and Control → Actions on Objectives) 단계만 사용한다. 다른 용어는 사용하지 않으며, 다른 단계가 도출됐을시 가장 근덥한 단계로 매핑하여 정의한다.
+8. MITRE ATT&CK을 매핑할때는 수행되는 공격과 가장 비슷한 ID를 나열한다. 나열된 ID를 비교하며 공격과 제일 근접한 ID만 사용한다. 중복으로도 사용 가능하다.
+9. evidence는 다음 규칙으로 분류한다. 실제 보고서나 Background Information에서 확인된 행위는 “observed” 정황을 기반으로 추론된 행위는 “inferred” 훈련을 위해 추가된 가정은 “simulated”로 분류한다.
 
 ** 시나리오는 JSON 형식으로 다음과 같은 형식을 지켜 출력할 것 **
 S_ID: 시나리오 순서 ID
@@ -47,10 +50,10 @@ Target: 이벤트 대상 (예: All, Web Server A, DB Server B 등)
 Title: 이벤트 간단 설명
 Description: 공격 상세 설명 (공격 경로, 사용 명령어 포함)
 Expected Actions: 참가자가 수행해야 할 탐지/대응 행동
-evidence: observed (실제 사건 기반) / inferred (추론 기반)
+evidence: observed (실제 사건 기반) / inferred (추론 기반) / simulated (훈련을 위한 가정)
 
 출력 전 다음 단계를 거쳐 사고한 뒤 JSON을 생성할 것:
 1. Target, Description, Title에 등장하는 자산을 추출한다.
 2. 추출한 자산이 asset 목록에 모두 포함되어 있는지 확인한다.
-3. asset에 없는 자산이 있다면 잘못된 출력으로 표시하고 중단한다.
+3. asset에 없는 자산이 있다면 존재하는 자산으로 교정한 뒤 검증 절차를 반복한다.
 4. 모든 검증이 통과되면 최종 JSON을 출력한다.
